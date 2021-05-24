@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.stockgraph.data.StockMapper">
+
+    <!--根据id获取股票-->
+    <select id="getStockById" resultMap="Stock">
+        select * from Stock where id=#{id}
+    </select>
+
+    <!--根据名称获取股票-->
+    <select id="getStockByName" resultMap="Stock">
+        select * from Stock where name=#{name} limit 0,1
+    </select>
+
+    <resultMap id="Stock" type="com.example.stockgraph.po.Stock">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="quarter_p" property="quarter_p"></result>
+        <result column="quarter_a" property="quarter_a"></result>
+        <result column="halfYear_p" property="halfYear_p"></result>
+        <result column="halfYear_a" property="halfYear_a"></result>
+        <result column="year_p" property="year_p"></result>
+        <result column="year_a" property="year_a"></result>
+        <result column="guarantee_a" property="guarantee_a"></result>
+    </resultMap>
+</mapper>
