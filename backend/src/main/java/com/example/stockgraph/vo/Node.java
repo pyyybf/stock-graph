@@ -12,6 +12,7 @@ public class Node {
     private Description description;
 
     public Node(Stock stock) {
+        cur_id = 0;
         this.id = cur_id++;
         this.label = stock.getName();
         this.cluster = "股票";
