@@ -10,28 +10,36 @@
       <a-descriptions-item label="总担保金额（人民币）" :span="2">
         {{this.currentStockInfo.guarantee_a}}亿元
       </a-descriptions-item>
-      <a-descriptions-item label="季度盈利概率" :span="3">
+      <a-descriptions-item label="历史持有盈利概率（季度）" :span="3">
         {{this.currentStockInfo.quarter_p}}
       </a-descriptions-item>
-      <a-descriptions-item label="季度盈利额" :span="3">
+      <a-descriptions-item label="平均持有盈利率（季度）" :span="3">
         {{this.currentStockInfo.quarter_a}}
       </a-descriptions-item>
-      <a-descriptions-item label="半年盈利概率" :span="3">
+      <a-descriptions-item label="历史持有盈利概率（半年）" :span="3">
         {{this.currentStockInfo.halfYear_p}}
       </a-descriptions-item>
-      <a-descriptions-item label="半年盈利额" :span="3">
+      <a-descriptions-item label="平均持有盈利率（半年）" :span="3">
         {{this.currentStockInfo.halfYear_a}}
       </a-descriptions-item>
-      <a-descriptions-item label="全年盈利概率" :span="3">
+      <a-descriptions-item label="历史持有盈利概率（一年）" :span="3">
         {{this.currentStockInfo.year_p}}
       </a-descriptions-item>
-      <a-descriptions-item label="全年盈利额" :span="3">
+      <a-descriptions-item label="平均持有盈利率（一年）" :span="3">
         {{this.currentStockInfo.year_a}}
       </a-descriptions-item>
       <a-descriptions-item label="事件" :span="6">
+
+        <!--            {{event.date.split('-')[0]}}年{{event.date.split('-')[1]}}月{{event.date.split('-')[2]}}日 {{event.type}}<br/>-->
+        <a-timeline mode="alternate">
           <span v-for="event in this.currentEventList">
-            {{event.date.split('-')[0]}}年{{event.date.split('-')[1]}}月{{event.date.split('-')[2]}}日 {{event.type}}<br/>
+            <a-timeline-item>
+              <a-icon slot="dot" type="bulb" style="font-size: 16px; color: gold" v-if="event.type == '新增概念'"/>
+              {{event.date.split('-')[0]}}-{{event.date.split('-')[1]}}-{{event.date.split('-')[2]}} {{event.type}}
+            </a-timeline-item>
           </span>
+        </a-timeline>
+
       </a-descriptions-item>
     </a-descriptions>
   </div>
@@ -86,6 +94,7 @@
         this.currentStockId = this.currentStockInfo.id;
       }
       const res2 = await getEventByStockIdAPI(this.currentStockId);
+      console.log(res2)
       this.currentEventList = res2.data.content;
     },
     methods: {
