@@ -38,30 +38,7 @@
 </template>
 
 <script>
-  import {getStockByIdAPI, getStockByNameAPI, getEventByStockIdAPI} from "../api";
-
-  const event_columns = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      sorter: true,
-      width: '20%',
-      scopedSlots: {customRender: 'name'},
-    },
-    {
-      title: 'Gender',
-      dataIndex: 'gender',
-      filters: [
-        {text: 'Male', value: 'male'},
-        {text: 'Female', value: 'female'},
-      ],
-      width: '20%',
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-    },
-  ]
+  import {getStockByIdAPI, getStockByNameAPI} from "../api";
 
   export default {
     name: "StockDetail",
@@ -69,39 +46,21 @@
       return {
         currentStockId: -1,
         currentStockName: '',
-        currentStockInfo: {},
-        currentEventList: [],
-        event_columns,
       }
     },
     async mounted() {
       if (this.$route.params.stockId) {
         this.currentStockId = this.$route.params.stockId;
-        const res1 = await getStockByIdAPI(this.currentStockId);
-        this.currentStockInfo = res1.data.content;
+        const res = await getStockByIdAPI(this.currentStockId);
+        console.log(res.data.content) //包含stock，nodes，edges
       } else {
         this.currentStockName = this.$route.params.stockName;
-        const res1 = await getStockByNameAPI(this.currentStockName);
-        this.currentStockInfo = res1.data.content;
-        this.currentStockId = this.currentStockInfo.id;
+        const res = await getStockByNameAPI(this.currentStockName);
+        console.log(res.data.content)
       }
-      const res2 = await getEventByStockIdAPI(this.currentStockId);
-      this.currentEventList = res2.data.content;
     },
     methods: {
-      handleTableChange(pagination, filters, sorter) {
-        console.log(pagination);
-        const pager = {...this.pagination};
-        pager.current = pagination.current;
-        this.pagination = pager;
-        this.fetch({
-          results: pagination.pageSize,
-          page: pagination.current,
-          sortField: sorter.field,
-          sortOrder: sorter.order,
-          ...filters,
-        });
-      },
+
     },
   }
 </script>

@@ -11,6 +11,6 @@
         <id column="id" property="id"></id>
         <result column="stock_id" property="stock_id"></result>
         <result column="date" property="date"></result>
-        <result column="type" property="type"></result>
+        <result column="label" property="label"></result>
     </resultMap>
 </mapper>

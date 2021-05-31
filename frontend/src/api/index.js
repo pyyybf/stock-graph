@@ -20,11 +20,3 @@ export const getStockByNameAPI = (parameter) => {
     params: {name: parameter}
   })
 }
-
-export const getEventByStockIdAPI = (parameter) => {
-  return HttpRequest.request({
-    url: `${api.eventPre}/getEventByStockId`,
-    method: 'get',
-    params: {stock_id: parameter}
-  })
-}

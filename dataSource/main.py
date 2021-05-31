@@ -142,7 +142,7 @@ event_columns = {
     'id': ['int(11)', 'NOT NULL', 'AUTO_INCREMENT'],
     'stock_id': ['int(11)', 'DEFAULT NULL'],
     'date': ['varchar(255)', 'DEFAULT NULL'],
-    'type': ['varchar(255)', 'DEFAULT NULL'],
+    'label': ['varchar(255)', 'DEFAULT NULL'],
 }
 event_data = []
 sample_event_data = []
@@ -158,15 +158,60 @@ with open('./resources/recent_pre.csv', 'r', encoding='utf-8') as recent_csv:
             'id': cur_id,
             'stock_id': row[0],
             'date': row[2],
-            'type': row[3]
+            'label': row[3]
         })
         if int(row[0]) <= 100:
             sample_event_data.append({
                 'id': cur_id,
                 'stock_id': row[0],
                 'date': row[2],
-                'type': row[3]
+                'label': row[3]
             })
     recent_csv.close()
 stockgraph_sql.write_table('Event', event_columns, 'id', event_data)
 sample_sql.write_table('Event', event_columns, 'id', sample_event_data)
+
+"""
+写入Punish表
+"""
+punish_columns = {
+    'id': ['int(11)', 'NOT NULL', 'AUTO_INCREMENT'],
+    'stock_id': ['int(11)', 'DEFAULT NULL'],
+    'date': ['varchar(255)', 'DEFAULT NULL'],
+    'amount': ['varchar(255)', 'DEFAULT NULL'],
+    'label': ['varchar(255)', 'DEFAULT NULL'],
+    'conductor': ['varchar(255)', 'DEFAULT NULL'],
+    'object': ['varchar(255)', 'DEFAULT NULL'],
+}
+punish_data = []
+sample_punish_data = []
+with open('./resources/punish_pre.csv', 'r', encoding='utf-8') as punish_csv:
+    next(punish_csv)
+    punish_csv_reader = csv.reader(punish_csv)
+    cur_id = 0
+    for row in punish_csv_reader:
+        if int(row[2].split('-')[0]) < 2018:
+            continue
+        cur_id += 1
+        punish_data.append({
+            'id': cur_id,
+            'stock_id': row[0],
+            'date': row[2],
+            'amount': row[3],
+            'label': '其他处罚' if row[4] == '其他' else row[4],
+            'conductor': row[5],
+            'object': row[6],
+        })
+        if int(row[0]) <= 100:
+            sample_punish_data.append({
+                'id': cur_id,
+                'stock_id': row[0],
+                'date': row[2],
+                'amount': row[3],
+                'label': '其他处罚' if row[4] == '其他' else row[4],
+                'conductor': row[5],
+                'object': row[6],
+            })
+    punish_csv.close()
+stockgraph_sql.write_table('Punish', punish_columns, 'id', punish_data)
+sample_sql.write_table('Punish', punish_columns, 'id', sample_punish_data)

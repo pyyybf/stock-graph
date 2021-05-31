@@ -4,7 +4,7 @@ public class Event {
     private int id;
     private int stock_id;
     private String date;
-    private String type;
+    private String label;
 
     public int getId() {
         return id;
@@ -30,11 +30,11 @@ public class Event {
         this.date = date;
     }
 
-    public String getType() {
-        return type;
+    public String getLabel() {
+        return label;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setLabel(String label) {
+        this.label = label;
     }
 }
