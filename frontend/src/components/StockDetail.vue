@@ -20,57 +20,37 @@
     '#5B8FF9',
     '#E8684A',
   ];
-  // const colors = [
-  //   '#BDD2FD',
-  //   '#BDEFDB',
-  //   '#C2C8D5',
-  //   '#FBE5A2',
-  //   '#F6C3B7',
-  //   '#B6E3F5',
-  //   '#D3C6EA',
-  //   '#FFD8B8',
-  //   '#AAD8D8',
-  //   '#FFD6E7',
-  // ];
-  // const strokes = [
-  //   '#5B8FF9',
-  //   '#5AD8A6',
-  //   '#5D7092',
-  //   '#F6BD16',
-  //   '#E8684A',
-  //   '#6DC8EC',
-  //   '#9270CA',
-  //   '#FF9D4D',
-  //   '#269A99',
-  //   '#FF99C3',
-  // ];
+
   export default {
     name: "StockDetail",
     data() {
       return {
         currentStockId: -1,
         currentStockName: '',
-        graphData:{}
+        graphData: {}
       }
     },
     async mounted() {
       if (this.$route.params.stockId) {
         this.currentStockId = this.$route.params.stockId;
         const res = await getStockByIdAPI(this.currentStockId);
-        console.log(res.data.content) //包含stock，nodes，edges
+        // console.log(res.data.content) //包含stock，nodes，edges
         this.graphData = res.data.content;
-        this.graphData.nodes.forEach((node) => {
-          node.id = node.id.toString();
-        });
-        this.graphData.edges.forEach((edge) => {
-          edge.source = edge.source.toString();
-          edge.target = edge.target.toString();
-        });
       } else {
         this.currentStockName = this.$route.params.stockName;
         const res = await getStockByNameAPI(this.currentStockName);
         // console.log(res.data.content);
         this.graphData = res.data.content;
+
+
+      }
+      this.init();
+    },
+    methods: {
+      init() {
+
+        const mount = document.getElementById('mount');
+
         this.graphData.nodes.forEach((node) => {
           node.id = node.id.toString();
         });
@@ -79,23 +59,36 @@
           edge.target = edge.target.toString();
         });
 
-      }
-      this.init();
-    },
-    methods: {
-      init(){
-        const mount = document.getElementById('mount');
         this.graphData.nodes.forEach((node) => {
           node.style = {};
-          if(node.cluster === '股票') {node.style.fill = colors[0]; node.size = 60;}
-          else if(node.cluster === '近期事件') node.style.fill = colors[1];
+          if (node.cluster === '股票') {
+            node.style.fill = colors[0];
+            node.size = 60;
+          } else if (node.cluster === '近期事件') node.style.fill = colors[1];
           else node.style.fill = colors[2];
         });
+
+        const tooltip = new G6.Tooltip({
+          offsetX: 10,
+          offsetY: 10,
+          itemTypes: ['node'],
+          // 自定义 tooltip 内容
+          getContent: (e) => {
+            const outDiv = document.createElement('div');
+            outDiv.style.width = 'fit-content';
+            if(e.item.getModel().index === 0) outDiv.innerHTML = e.item.getModel().label;
+            else outDiv.innerHTML = e.item.getModel().description.date;
+            return outDiv;
+          },
+        });
+
+
         const graph = new G6.Graph({
           container: mount,
           center: true,
           width: 600,
           height: 500,
+          plugins: [tooltip],
           modes: {
             default: [
               'zoom-canvas',
@@ -142,8 +135,40 @@
           model.fy = e.y;
         }
 
-      },
+        this.graphData.nodes.forEach(function (node) {
+          node.oriSize = node.size;
+          node.oriLabel = node.label;
+        });
 
+        graph.on('node:click', function (e) {
+          const node = e.item;
+          const states = node.getStates();
+          let clicked = false;
+          const model = node.getModel();
+          let size = 100;
+          let labelText = model.oriLabel + '\n Date: ' + model.description.date + '\n';
+          if (model.description.conductor !== '--') {
+            labelText += 'Conductor: ' + model.description.conductor + '\n';
+          }
+          if (model.description.amount !== '--') {
+            labelText += 'Amount: ' + model.description.amount + '\n';
+          }
+          states.forEach(function (state) {
+            if (state === 'click') {
+              clicked = true;
+              size = model.oriSize;
+              labelText = model.oriLabel;
+            }
+          });
+          graph.setItemState(node, 'click', !clicked);
+          graph.updateItem(node, {
+            size,
+            label: labelText,
+          });
+          graph.layout();
+        });
+
+      },
 
 
     },
@@ -151,7 +176,13 @@
 </script>
 
 <style scoped>
-#mount{
-  background-color: aliceblue;
-}
+  #mount {
+    background-color: aliceblue;
+  }
+
+  .g6-component-tooltip {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 0px 10px 24px 10px;
+    box-shadow: rgb(174, 174, 174) 0px 0px 10px;
+  }
 </style>
