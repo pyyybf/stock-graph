@@ -2,13 +2,25 @@
   <div class="">
 
     <div id="mount"></div>
+    <a-row id="chart">
+      <a-col :span="12">
+        <div class="righttop" ref="charts1" style="height: 500px;width:500px"></div>
+      </a-col>
+      <a-col :span="12">
+        <div class="righttop" ref="charts2" style="height: 500px;width:500px"></div>
+      </a-col>
+    </a-row>
 
   </div>
+
+
+
 </template>
 
 <script>
   import {getStockByIdAPI, getStockByNameAPI} from "../api";
   import G6 from '@antv/g6';
+  import * as echarts from 'echarts';
 
   const colors = [
     '#BDEFDB',
@@ -27,24 +39,44 @@
       return {
         currentStockId: -1,
         currentStockName: '',
-        graphData: {}
+        pre_data: [5,3,23],
+        avg_data: [1,1,1],
       }
     },
     async mounted() {
       if (this.$route.params.stockId) {
         this.currentStockId = this.$route.params.stockId;
         const res = await getStockByIdAPI(this.currentStockId);
-        // console.log(res.data.content) //包含stock，nodes，edges
+        console.log(res.data.content) //包含stock，nodes，edges
         this.graphData = res.data.content;
+        this.pre_data = [];
+        this.pre_data[0] = res.data.content.stock.quarter_p;
+        this.pre_data[1] = res.data.content.stock.halfYear_p;
+        this.pre_data[2] = res.data.content.stock.year_p;
+        this.avg_data = [];
+        this.avg_data[0] = res.data.content.stock.quarter_a;
+        this.avg_data[1] = res.data.content.stock.halfYear_a;
+        this.avg_data[2] = res.data.content.stock.year_a;
       } else {
         this.currentStockName = this.$route.params.stockName;
         const res = await getStockByNameAPI(this.currentStockName);
         // console.log(res.data.content);
         this.graphData = res.data.content;
+        this.graphData = res.data.content;
+        this.pre_data = [];
+        this.pre_data[0] = res.data.content.stock.quarter_p;
+        this.pre_data[1] = res.data.content.stock.halfYear_p;
+        this.pre_data[2] = res.data.content.stock.year_p;
+        this.avg_data = [];
+        this.avg_data[0] = res.data.content.stock.quarter_a;
+        this.avg_data[1] = res.data.content.stock.halfYear_a;
+        this.avg_data[2] = res.data.content.stock.year_a;
 
 
       }
       this.init();
+      this.initbargraph1();
+      this.initbargraph2();
     },
     methods: {
       init() {
@@ -171,6 +203,52 @@
       },
 
 
+      initbargraph1() {
+        let myChart = echarts.init(this.$refs.charts1, "macarons");
+        myChart.setOption({
+          title: {
+            text: '历史持有盈利概率',
+            // subtext:'图例表示了在此知识图谱中，关系的类型与关系类型的分布情况'
+          },
+          grid: {
+            top: 90
+          },
+          tooltip: {},
+          xAxis: {
+            data: ['季度','半年','一年']
+          },
+          yAxis: {},
+          series: [{
+            name: '数量',
+            type: 'bar',
+            data: this.pre_data,
+            barWidth: '50%'
+          }]
+        })
+      },
+      initbargraph2() {
+        let myChart = echarts.init(this.$refs.charts2, "macarons");
+        myChart.setOption({
+          title: {
+            text: '平均持有盈利概率',
+            // subtext:'图例表示了在此知识图谱中，关系的类型与关系类型的分布情况'
+          },
+          grid: {
+            top: 90
+          },
+          tooltip: {},
+          xAxis: {
+            data: ['季度','半年','一年']
+          },
+          yAxis: {},
+          series: [{
+            name: '数量',
+            type: 'bar',
+            data: this.avg_data,
+            barWidth: '50%'
+          }]
+        })
+      },
     },
   }
 </script>
@@ -179,10 +257,16 @@
   #mount {
     background-color: aliceblue;
   }
-
+  #chart {
+    background-color: aliceblue;
+  }
   .g6-component-tooltip {
     background-color: rgba(255, 255, 255, 0.8);
     padding: 0px 10px 24px 10px;
     box-shadow: rgb(174, 174, 174) 0px 0px 10px;
+  }
+  .righttop{
+    width: 100%;
+    height: 100%;
   }
 </style>
