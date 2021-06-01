@@ -11,10 +11,10 @@ Vue.use(Input);
 Vue.use(Row);
 Vue.use(Col);
 Vue.use(Radio);
-Vue.use(Descriptions);
-Vue.use(Table);
-Vue.use(Timeline);
-Vue.use(Icon);
+// Vue.use(Descriptions);
+// Vue.use(Table);
+// Vue.use(Timeline);
+// Vue.use(Icon);
 
 /* eslint-disable no-new */
 new Vue({

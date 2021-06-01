@@ -1,7 +1,8 @@
 <template>
   <div class="">
-
+    <!--挂载G6图谱-->
     <div id="mount"></div>
+
     <a-row id="chart">
       <a-col :span="12">
         <div class="righttop" ref="charts1" style="height: 500px;width:500px"></div>
@@ -12,9 +13,6 @@
     </a-row>
 
   </div>
-
-
-
 </template>
 
 <script>
@@ -27,11 +25,6 @@
     '#BDD2FD',
     '#F6C3B7',
   ];
-  const strokes = [
-    '#5AD8A6',
-    '#5B8FF9',
-    '#E8684A',
-  ];
 
   export default {
     name: "StockDetail",
@@ -39,15 +32,17 @@
       return {
         currentStockId: -1,
         currentStockName: '',
+        graphData: {},
         pre_data: [5,3,23],
         avg_data: [1,1,1],
       }
     },
     async mounted() {
+      //按照stockId查询
       if (this.$route.params.stockId) {
         this.currentStockId = this.$route.params.stockId;
         const res = await getStockByIdAPI(this.currentStockId);
-        console.log(res.data.content) //包含stock，nodes，edges
+        // 获得图谱数据
         this.graphData = res.data.content;
         this.pre_data = [];
         this.pre_data[0] = res.data.content.stock.quarter_p;
@@ -57,11 +52,12 @@
         this.avg_data[0] = res.data.content.stock.quarter_a;
         this.avg_data[1] = res.data.content.stock.halfYear_a;
         this.avg_data[2] = res.data.content.stock.year_a;
-      } else {
+      }
+      // 按照股票名称查询
+      else {
         this.currentStockName = this.$route.params.stockName;
         const res = await getStockByNameAPI(this.currentStockName);
-        // console.log(res.data.content);
-        this.graphData = res.data.content;
+        // 获得图谱数据
         this.graphData = res.data.content;
         this.pre_data = [];
         this.pre_data[0] = res.data.content.stock.quarter_p;
@@ -71,18 +67,16 @@
         this.avg_data[0] = res.data.content.stock.quarter_a;
         this.avg_data[1] = res.data.content.stock.halfYear_a;
         this.avg_data[2] = res.data.content.stock.year_a;
-
-
       }
-      this.init();
+      this.initG6();
       this.initbargraph1();
       this.initbargraph2();
     },
     methods: {
-      init() {
-
+      initG6() {
+        //挂载G6的element
         const mount = document.getElementById('mount');
-
+        // 将int格式的id, source, target转为string
         this.graphData.nodes.forEach((node) => {
           node.id = node.id.toString();
         });
@@ -90,7 +84,7 @@
           edge.source = edge.source.toString();
           edge.target = edge.target.toString();
         });
-
+        // 根据三种类型（股票、近期事件、惩罚事件）分配颜色
         this.graphData.nodes.forEach((node) => {
           node.style = {};
           if (node.cluster === '股票') {
@@ -99,12 +93,11 @@
           } else if (node.cluster === '近期事件') node.style.fill = colors[1];
           else node.style.fill = colors[2];
         });
-
+        // 鼠标悬浮窗，显示日期
         const tooltip = new G6.Tooltip({
           offsetX: 10,
           offsetY: 10,
           itemTypes: ['node'],
-          // 自定义 tooltip 内容
           getContent: (e) => {
             const outDiv = document.createElement('div');
             outDiv.style.width = 'fit-content';
@@ -113,21 +106,16 @@
             return outDiv;
           },
         });
-
-
+        // 初始化G6图谱
         const graph = new G6.Graph({
           container: mount,
           center: true,
+          // canvas的长宽
           width: 600,
           height: 500,
           plugins: [tooltip],
-          modes: {
-            default: [
-              'zoom-canvas',
-              'drag-canvas',
-              'drag-node'
-            ],
-          },
+          // 设置可以拖动节点、放缩图谱等
+          modes: {default: ['zoom-canvas', 'drag-canvas', 'drag-node']},
           layout: {
             type: "force",
             nodeSpacing: 15,
@@ -144,11 +132,11 @@
             }
           },
         });
-        // console.log(this.graphData);
+        // 读取数据、渲染图谱
         graph.data(this.graphData);
         graph.render();
 
-
+        // 拖动节点的动画效果
         graph.on('node:dragstart', function (e) {
           graph.layout();
           refreshDragedNodePosition(e);
@@ -160,18 +148,17 @@
           e.item.get('model').fx = null;
           e.item.get('model').fy = null;
         });
-
         function refreshDragedNodePosition(e) {
           const model = e.item.get('model');
           model.fx = e.x;
           model.fy = e.y;
         }
 
+        //单击节点事件（放大节点显示详情，再次单击则恢复）
         this.graphData.nodes.forEach(function (node) {
           node.oriSize = node.size;
           node.oriLabel = node.label;
         });
-
         graph.on('node:click', function (e) {
           const node = e.item;
           const states = node.getStates();
@@ -179,12 +166,8 @@
           const model = node.getModel();
           let size = 100;
           let labelText = model.oriLabel + '\n Date: ' + model.description.date + '\n';
-          if (model.description.conductor !== '--') {
-            labelText += 'Conductor: ' + model.description.conductor + '\n';
-          }
-          if (model.description.amount !== '--') {
-            labelText += 'Amount: ' + model.description.amount + '\n';
-          }
+          if (model.description.conductor !== '--') labelText += 'Conductor: ' + model.description.conductor + '\n';
+          if (model.description.amount !== '--') labelText += 'Amount: ' + model.description.amount + '\n';
           states.forEach(function (state) {
             if (state === 'click') {
               clicked = true;
@@ -202,7 +185,7 @@
 
       },
 
-
+      // echarts初始化
       initbargraph1() {
         let myChart = echarts.init(this.$refs.charts1, "macarons");
         myChart.setOption({
@@ -226,11 +209,12 @@
           }]
         })
       },
+
       initbargraph2() {
         let myChart = echarts.init(this.$refs.charts2, "macarons");
         myChart.setOption({
           title: {
-            text: '平均持有盈利概率',
+            text: '平均持有盈利情况',
             // subtext:'图例表示了在此知识图谱中，关系的类型与关系类型的分布情况'
           },
           grid: {
@@ -249,7 +233,7 @@
           }]
         })
       },
-    },
+    }
   }
 </script>
 
