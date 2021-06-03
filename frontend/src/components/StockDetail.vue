@@ -2,8 +2,8 @@
   <div id="all">
     <!-- {{$data.currentStockName}} -->
     <div id="bar">
-      <div id="StockName">{{$data.currentStockName}} 123</div>
-      <div id="StockId">{{$data.currentStockId}}</div>
+      <div id="StockName">{{$data.currentStockName}} 深圳机场</div>
+      <div id="StockId">Id {{$data.currentStockId}}</div>
       <div id="Guarantee">
         <div id="text">总担保额</div>
         <div id="Num">￥12345</div>
@@ -294,7 +294,7 @@
     margin-bottom: 0.5%;
     padding-left: 30px;
     color:whitesmoke;
-    font-weight: bold;
+    /* font-weight: bold; */
 
   }
   #Guarantee{
