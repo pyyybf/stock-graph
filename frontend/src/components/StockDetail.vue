@@ -1,17 +1,36 @@
 <template>
-  <div class="">
-    <!--挂载G6图谱-->
-    <div id="mount"></div>
+  <div id="all">
+    <!-- {{$data.currentStockName}} -->
+    <div id="bar">
+      <div id="StockName">{{$data.currentStockName}} 123</div>
+      <div id="StockId">{{$data.currentStockId}}</div>
+      <div id="Guarantee">
+        <div id="text">总担保额</div>
+        <div id="Num">￥12345</div>
+      </div>
+    </div>
 
-    <a-row id="chart">
-      <a-col :span="12">
-        <div class="righttop" ref="charts1" style="height: 500px;width:500px"></div>
-      </a-col>
-      <a-col :span="12">
-        <div class="righttop" ref="charts2" style="height: 500px;width:500px"></div>
-      </a-col>
-    </a-row>
-
+    <div id="details">
+      <!-- echarts -->
+      <div id="echarts">
+        <a-row id="chart">
+          <a-col :span="12">
+            <div class="righttop" ref="charts1" style="height: 500px;width:500px;padding-left:15%"></div>
+          </a-col>
+          <a-col :span="12">
+            <div class="righttop" ref="charts2" style="height: 500px;width:500px；padding-right:15%"></div>
+          </a-col>
+        </a-row>
+      </div>
+      <div id="text2">近期事件与处罚事件</div>
+      <div id="legend">
+        <div id="green"><img src="../assets/circle.png" style="height:35px;width:35px"/>  股票</div>
+        <div id="red"><img src="../assets/circle2.png" style="height:35px;width:35px"/>   处罚事件</div>
+        <div id="blue"><img src="../assets/circle3.png" style="height:35px;width:35px"/>   近期事件</div>        
+      </div>
+      <!--挂载G6图谱-->
+      <div id="mount"></div>
+    </div>
   </div>
 </template>
 
@@ -111,7 +130,7 @@
           container: mount,
           center: true,
           // canvas的长宽
-          width: 600,
+          width: 1000,
           height: 500,
           plugins: [tooltip],
           // 设置可以拖动节点、放缩图谱等
@@ -191,6 +210,9 @@
         myChart.setOption({
           title: {
             text: '历史持有盈利概率',
+            textStyle:{
+              fontSize:25,
+            }
             // subtext:'图例表示了在此知识图谱中，关系的类型与关系类型的分布情况'
           },
           grid: {
@@ -215,6 +237,9 @@
         myChart.setOption({
           title: {
             text: '平均持有盈利情况',
+            textStyle:{
+              fontSize:25,
+            }
             // subtext:'图例表示了在此知识图谱中，关系的类型与关系类型的分布情况'
           },
           grid: {
@@ -238,11 +263,89 @@
 </script>
 
 <style scoped>
+  #all{
+    height: 100%;
+    width: 100%;
+  }
+  #bar{
+    width: 100%;
+    height: 5%;
+    display: flex;
+    background-color: rgba(77, 130, 251, 0.75);
+    /* position: fixed;
+    top:0;
+    left: 0;
+    right: 0; */
+  }
+  #StockName{
+    width: 20%;
+    height: 70%;
+    font-size: 43px;
+    margin-bottom: 0.5%;
+    padding-left: 30px;
+    color:whitesmoke;
+    font-weight: bold;
+    
+  }
+  #StockId{
+    width: 20%;
+    height: 70%;
+    font-size: 43px;
+    margin-bottom: 0.5%;
+    padding-left: 30px;
+    color:whitesmoke;
+    font-weight: bold;
+
+  }
+  #Guarantee{
+    width:60%;
+    height: 100%;
+    display: flex;
+  }
+  #text{
+    width: 35%;
+    height: 70%;
+    font-size: 40px;
+    margin-bottom: 0.5%;
+    margin-left: 40%;
+    padding-left: 30px;
+    color:whitesmoke;
+  }
+  #Num{
+    width: 35%;
+    font-size: 43px;
+    margin-bottom: 0.5%;
+    margin-bottom: 10px;
+    color:red;
+  }
+  #details{
+    height: 94%;
+    padding-top: 2%;
+    padding-left: 3%;
+    padding-right: 3%;
+    width: 100%;
+    background-color: aliceblue;
+  }
+  #text2{
+    font-size: 25px;
+    font-weight: bold;
+    padding-left: 8%;
+    width: 30%;
+    float: left;
+  }
   #mount {
     background-color: aliceblue;
+    width: 100%;
+    padding-left: 100px;
   }
   #chart {
     background-color: aliceblue;
+    width: 100%;
+  }
+  #green,#red,#blue{
+    width: 15%;
+    float:right;
+    font-weight: bold;
   }
   .g6-component-tooltip {
     background-color: rgba(255, 255, 255, 0.8);
