@@ -3,18 +3,13 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import {Col, Descriptions, Input, Radio, Row, Table, Timeline, Icon} from 'ant-design-vue'
+import {Input, Radio, Divider} from 'ant-design-vue'
 
 Vue.config.productionTip = false;
 
 Vue.use(Input);
-Vue.use(Row);
-Vue.use(Col);
 Vue.use(Radio);
-// Vue.use(Descriptions);
-// Vue.use(Table);
-// Vue.use(Timeline);
-// Vue.use(Icon);
+Vue.use(Divider);
 
 /* eslint-disable no-new */
 new Vue({

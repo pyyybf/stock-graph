@@ -1,35 +1,29 @@
 <template>
   <div id="all">
-    <!-- {{$data.currentStockName}} -->
     <div id="bar">
-      <div id="StockName">{{$data.currentStockName}} 深圳机场</div>
-      <div id="StockId">Id {{$data.currentStockId}}</div>
-      <div id="Guarantee">
-        <div id="text">总担保额</div>
-        <div id="Num">￥{{$data.guarantee_a.toFixed(2)}}</div>
-      </div>
+      <div class="headerContent">{{$data.currentStockName}}</div>
+      <div class="headerContent">Id {{$data.currentStockId}}</div>
+      <div class="headerContent"> 总担保额: ￥{{$data.guarantee_a.toFixed(2)}} </div>
+
     </div>
 
     <div id="details">
-      <!-- echarts -->
-      <div id="echarts">
-        <a-row id="chart">
-          <a-col :span="12">
-            <div class="righttop" ref="charts1" style="height: 500px;width:500px;padding-left:15%"></div>
-          </a-col>
-          <a-col :span="12">
-            <div class="righttop" ref="charts2" style="height: 500px;width:500px；padding-right:15%"></div>
-          </a-col>
-        </a-row>
+      <a-divider></a-divider>
+      <div id="chart">
+          <div class="righttop" ref="charts1" style="height: 300px;width:400px;"></div>
+          <div class="righttop" ref="charts2" style="height: 300px;width:400px;"></div>
       </div>
-      <div id="text2">近期事件与处罚事件</div>
-      <div id="legend">
-        <div id="green"><img src="../assets/circle.png" style="height:35px;width:35px"/>  股票</div>
-        <div id="red"><img src="../assets/circle2.png" style="height:35px;width:35px"/>   处罚事件</div>
-        <div id="blue"><img src="../assets/circle3.png" style="height:35px;width:35px"/>   近期事件</div>        
+
+      <a-divider></a-divider>
+      <div class="graph">
+        <div id="text2">近期事件与处罚事件</div>
+          <span class="pin"><img src="../assets/circle.png" />  股票  </span>
+          <span class="pin"><img src="../assets/circle2.png"/>   处罚事件  </span>
+          <span class="pin"><img src="../assets/circle3.png"/>   近期事件  </span>
       </div>
       <!--挂载G6图谱-->
       <div id="mount"></div>
+
     </div>
   </div>
 </template>
@@ -73,6 +67,7 @@
         this.avg_data[1] = res.data.content.stock.halfYear_a;
         this.avg_data[2] = res.data.content.stock.year_a;
         this.guarantee_a=res.data.content.stock.guarantee_a;
+        this.currentStockName = this.graphData.nodes[0].label;
       }
       // 按照股票名称查询
       else {
@@ -133,11 +128,11 @@
           container: mount,
           center: true,
           // canvas的长宽
-          width: 1000,
-          height: 500,
+          width: 800,
+          height: 450,
           plugins: [tooltip],
           // 设置可以拖动节点、放缩图谱等
-          modes: {default: ['zoom-canvas', 'drag-canvas', 'drag-node']},
+          modes: {default: ['drag-canvas', 'drag-node']},
           layout: {
             type: "force",
             nodeSpacing: 15,
@@ -214,7 +209,7 @@
           title: {
             text: '历史持有盈利概率',
             textStyle:{
-              fontSize:25,
+              fontSize:20,
             }
             // subtext:'图例表示了在此知识图谱中，关系的类型与关系类型的分布情况'
           },
@@ -241,7 +236,7 @@
           title: {
             text: '平均持有盈利情况',
             textStyle:{
-              fontSize:25,
+              fontSize:20,
             }
             // subtext:'图例表示了在此知识图谱中，关系的类型与关系类型的分布情况'
           },
@@ -268,58 +263,26 @@
 <style scoped>
   #all{
     height: 100%;
-    width: 100%;
+    width: 85%;
+    margin: 1em auto auto;
+    border: 1px solid rgba(136, 136, 136, 0.54);
+    border-radius: 20px;
   }
   #bar{
-    width: 100%;
-    height: 5%;
+    margin-top: 3em;
     display: flex;
-    background-color: rgba(77, 130, 251, 0.75);
-    /* position: fixed;
-    top:0;
-    left: 0;
-    right: 0; */
+    line-height: 30px;
+    height: 60px;
+    align-items: center;
+    min-width: 90%;
+    /*background-color: aliceblue;*/
   }
-  #StockName{
-    width: 20%;
-    height: 70%;
-    font-size: 43px;
-    margin-bottom: 0.5%;
-    padding-left: 30px;
-    color:whitesmoke;
-    font-weight: bold;
-    
-  }
-  #StockId{
-    width: 20%;
-    height: 70%;
-    font-size: 43px;
-    margin-bottom: 0.5%;
-    padding-left: 30px;
-    color:whitesmoke;
-    /* font-weight: bold; */
-
-  }
-  #Guarantee{
-    width:60%;
-    height: 100%;
-    display: flex;
-  }
-  #text{
-    width: 35%;
-    height: 70%;
-    font-size: 40px;
-    margin-bottom: 0.5%;
-    margin-left: 40%;
-    padding-left: 30px;
-    color:whitesmoke;
-  }
-  #Num{
-    width: 35%;
-    font-size: 43px;
-    margin-bottom: 0.5%;
-    margin-bottom: 10px;
-    color:red;
+  .headerContent{
+    margin: -1em auto auto;
+    font-size: 30px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    padding: 40px;
+    color: #636363;
   }
   #details{
     height: 94%;
@@ -327,36 +290,48 @@
     padding-left: 3%;
     padding-right: 3%;
     width: 100%;
-    background-color: aliceblue;
   }
   #text2{
     font-size: 25px;
     font-weight: bold;
-    padding-left: 8%;
+    padding-left: 7%;
     width: 30%;
     float: left;
   }
   #mount {
+    text-align: center;
+    margin: auto auto 3em;
     background-color: aliceblue;
-    width: 100%;
-    padding-left: 100px;
+    width: 70%;
+    height:450px
   }
   #chart {
-    background-color: aliceblue;
-    width: 100%;
+    text-align: center;
+    /*width: 80%;*/
+    height: 80%;
   }
-  #green,#red,#blue{
-    width: 15%;
+  .pin{
     float:right;
     font-weight: bold;
+    margin-right: 1em;
+  }
+  img{
+    height: 20px;
+    width: 20px;
+    margin-right: 10px;
+  }
+  .graph{
+    margin-bottom: 3em;
+    padding: 5px;
   }
   .g6-component-tooltip {
     background-color: rgba(255, 255, 255, 0.8);
     padding: 0px 10px 24px 10px;
-    box-shadow: rgb(174, 174, 174) 0px 0px 10px;
   }
   .righttop{
-    width: 100%;
-    height: 100%;
+    display: inline-block;
+    margin: 3em;
+    /*width: 80%;*/
+    height: 80%;
   }
 </style>
