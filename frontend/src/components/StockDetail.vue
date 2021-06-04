@@ -6,7 +6,7 @@
       <div id="StockId">Id {{$data.currentStockId}}</div>
       <div id="Guarantee">
         <div id="text">总担保额</div>
-        <div id="Num">￥12345</div>
+        <div id="Num">￥{{$data.guarantee_a.toFixed(2)}}</div>
       </div>
     </div>
 
@@ -54,6 +54,7 @@
         graphData: {},
         pre_data: [5,3,23],
         avg_data: [1,1,1],
+        guarantee_a:0,
       }
     },
     async mounted() {
@@ -71,6 +72,7 @@
         this.avg_data[0] = res.data.content.stock.quarter_a;
         this.avg_data[1] = res.data.content.stock.halfYear_a;
         this.avg_data[2] = res.data.content.stock.year_a;
+        this.guarantee_a=res.data.content.stock.guarantee_a;
       }
       // 按照股票名称查询
       else {
@@ -86,6 +88,7 @@
         this.avg_data[0] = res.data.content.stock.quarter_a;
         this.avg_data[1] = res.data.content.stock.halfYear_a;
         this.avg_data[2] = res.data.content.stock.year_a;
+        this.guarantee_a=res.data.content.stock.guarantee_a;
       }
       this.initG6();
       this.initbargraph1();
