@@ -1,28 +1,32 @@
 <template>
   <div id="all">
     <div id="bar">
-      <div class="headerContent">{{$data.currentStockName}}</div>
-      <div class="headerContent">Id {{$data.currentStockId}}</div>
-      <div class="headerContent"> 总担保额: ￥{{$data.guarantee_a.toFixed(2)}} </div>
+      <div class="headerContent">{{currentStockName}}</div>
+      <div class="headerContent">Id {{(Array(6).join(0) + parseInt(currentStockId)).slice(-6)}}</div>
+      <div class="headerContent"> 总担保额: ￥{{guarantee_a.toFixed(2)}}</div>
 
     </div>
+    <a-divider></a-divider>
 
     <div id="details">
-      <a-divider></a-divider>
-      <div id="chart">
-          <div class="righttop" ref="charts1" style="height: 300px;width:400px;"></div>
-          <div class="righttop" ref="charts2" style="height: 300px;width:400px;"></div>
-      </div>
-
-      <a-divider></a-divider>
-      <div class="graph">
-        <div id="text2">近期事件与处罚事件</div>
-          <span class="pin"><img src="../assets/circle.png" />  股票  </span>
-          <span class="pin"><img src="../assets/circle2.png"/>   处罚事件  </span>
-          <span class="pin"><img src="../assets/circle3.png"/>   近期事件  </span>
-      </div>
-      <!--挂载G6图谱-->
-      <div id="mount"></div>
+      <a-row>
+        <a-col :span="15">
+          <a-row class="graph" type="flex" justify="space-around" align="middle">
+            <a-col :span="12" id="text2">近期事件与处罚事件</a-col>
+            <a-col :span="12">
+              <span class="pin"><img src="../assets/circle.png"/>  股票  </span>
+              <span class="pin"><img src="../assets/circle2.png"/>   处罚事件  </span>
+              <span class="pin"><img src="../assets/circle3.png"/>   近期事件  </span>
+            </a-col>
+          </a-row>
+          <!--挂载G6图谱-->
+          <div id="mount"></div>
+        </a-col>
+        <a-col :span="8" :offset="1" id="chart">
+          <div class="righttop" ref="charts1" style="width: 100%;height: 300px"></div>
+          <div class="righttop" ref="charts2" style="width: 100%;height: 300px"></div>
+        </a-col>
+      </a-row>
 
     </div>
   </div>
@@ -46,9 +50,9 @@
         currentStockId: -1,
         currentStockName: '',
         graphData: {},
-        pre_data: [5,3,23],
-        avg_data: [1,1,1],
-        guarantee_a:0,
+        pre_data: [5, 3, 23],
+        avg_data: [1, 1, 1],
+        guarantee_a: 0,
       }
     },
     async mounted() {
@@ -66,8 +70,8 @@
         this.avg_data[0] = res.data.content.stock.quarter_a;
         this.avg_data[1] = res.data.content.stock.halfYear_a;
         this.avg_data[2] = res.data.content.stock.year_a;
-        this.guarantee_a=res.data.content.stock.guarantee_a;
-        this.currentStockName = this.graphData.nodes[0].label;
+        this.guarantee_a = res.data.content.stock.guarantee_a;
+        this.currentStockName = res.data.content.stock.name;
       }
       // 按照股票名称查询
       else {
@@ -83,7 +87,7 @@
         this.avg_data[0] = res.data.content.stock.quarter_a;
         this.avg_data[1] = res.data.content.stock.halfYear_a;
         this.avg_data[2] = res.data.content.stock.year_a;
-        this.guarantee_a=res.data.content.stock.guarantee_a;
+        this.guarantee_a = res.data.content.stock.guarantee_a;
       }
       this.initG6();
       this.initbargraph1();
@@ -118,7 +122,7 @@
           getContent: (e) => {
             const outDiv = document.createElement('div');
             outDiv.style.width = 'fit-content';
-            if(e.item.getModel().index === 0) outDiv.innerHTML = e.item.getModel().label;
+            if (e.item.getModel().index === 0) outDiv.innerHTML = e.item.getModel().label;
             else outDiv.innerHTML = e.item.getModel().description.date;
             return outDiv;
           },
@@ -128,8 +132,8 @@
           container: mount,
           center: true,
           // canvas的长宽
-          width: 800,
-          height: 450,
+          width: mount.offsetWidth,
+          height: mount.offsetHeight,
           plugins: [tooltip],
           // 设置可以拖动节点、放缩图谱等
           modes: {default: ['drag-canvas', 'drag-node']},
@@ -165,6 +169,7 @@
           e.item.get('model').fx = null;
           e.item.get('model').fy = null;
         });
+
         function refreshDragedNodePosition(e) {
           const model = e.item.get('model');
           model.fx = e.x;
@@ -208,8 +213,8 @@
         myChart.setOption({
           title: {
             text: '历史持有盈利概率',
-            textStyle:{
-              fontSize:20,
+            textStyle: {
+              fontSize: 20,
             }
             // subtext:'图例表示了在此知识图谱中，关系的类型与关系类型的分布情况'
           },
@@ -218,7 +223,7 @@
           },
           tooltip: {},
           xAxis: {
-            data: ['季度','半年','一年']
+            data: ['季度', '半年', '一年']
           },
           yAxis: {},
           series: [{
@@ -235,8 +240,8 @@
         myChart.setOption({
           title: {
             text: '平均持有盈利情况',
-            textStyle:{
-              fontSize:20,
+            textStyle: {
+              fontSize: 20,
             }
             // subtext:'图例表示了在此知识图谱中，关系的类型与关系类型的分布情况'
           },
@@ -245,7 +250,7 @@
           },
           tooltip: {},
           xAxis: {
-            data: ['季度','半年','一年']
+            data: ['季度', '半年', '一年']
           },
           yAxis: {},
           series: [{
@@ -261,77 +266,88 @@
 </script>
 
 <style scoped>
-  #all{
+  #all {
     height: 100%;
     width: 85%;
     margin: 1em auto auto;
     border: 1px solid rgba(136, 136, 136, 0.54);
     border-radius: 20px;
   }
-  #bar{
+
+  #bar {
     margin-top: 3em;
     display: flex;
-    line-height: 30px;
-    height: 60px;
+    /*line-height: 30px;*/
+    height: 20px;
     align-items: center;
     min-width: 90%;
     /*background-color: aliceblue;*/
   }
-  .headerContent{
-    margin: -1em auto auto;
-    font-size: 30px;
+
+  .headerContent {
+    margin: -2.5em auto auto;
+    font-size: 20px;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     padding: 40px;
     color: #636363;
   }
-  #details{
+
+  #details {
     height: 94%;
     padding-top: 2%;
     padding-left: 3%;
     padding-right: 3%;
     width: 100%;
   }
-  #text2{
+
+  #text2 {
     font-size: 25px;
     font-weight: bold;
-    padding-left: 7%;
-    width: 30%;
+    /*padding-left: 7%;*/
     float: left;
   }
+
   #mount {
     text-align: center;
-    margin: auto auto 3em;
+    /*margin: auto auto 3em;*/
     background-color: aliceblue;
-    width: 70%;
-    height:450px
+    /*width: 70%;*/
+    height: 450px;
+    margin-bottom: 1em;
   }
+
   #chart {
     text-align: center;
     /*width: 80%;*/
     height: 80%;
   }
-  .pin{
-    float:right;
+
+  .pin {
+    float: right;
     font-weight: bold;
     margin-right: 1em;
   }
-  img{
+
+  img {
     height: 20px;
     width: 20px;
     margin-right: 10px;
   }
-  .graph{
+
+  .graph {
     margin-bottom: 3em;
     padding: 5px;
   }
+
   .g6-component-tooltip {
     background-color: rgba(255, 255, 255, 0.8);
     padding: 0px 10px 24px 10px;
   }
-  .righttop{
+
+  .righttop {
     display: inline-block;
-    margin: 3em;
+    /*margin: 3em;*/
     /*width: 80%;*/
-    height: 80%;
+    /*height: 80%;*/
   }
 </style>
