@@ -6,4 +6,6 @@ public interface StockService {
     Stock getStockById(int id);
 
     Stock getStockByName(String name);
+
+    int ifExist(int id, String name);
 }

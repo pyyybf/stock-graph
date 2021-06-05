@@ -35,11 +35,16 @@ public class StockController {
 
     @GetMapping("/getStockByName")
     public ResponseVO getStockByName(@RequestParam(value = "name") String name) {
-        Stock stock=stockService.getStockByName(name);
+        Stock stock = stockService.getStockByName(name);
         GraphInfo graphInfo = new GraphInfo(
                 stock,
                 eventService.getEventByStockId(stock.getId()),
                 punishService.getPunishByStockId(stock.getId()));
         return ResponseVO.buildSuccess(graphInfo);
+    }
+
+    @GetMapping("/ifExist")
+    public ResponseVO ifExist(@RequestParam(value = "id") int id, @RequestParam(value = "name") String name) {
+        return ResponseVO.buildSuccess(stockService.ifExist(id, name) > 0);
     }
 }

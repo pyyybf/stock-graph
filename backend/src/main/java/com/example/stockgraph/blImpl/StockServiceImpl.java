@@ -20,4 +20,9 @@ public class StockServiceImpl implements StockService {
     public Stock getStockByName(String name) {
         return stockMapper.getStockByName(name);
     }
+
+    @Override
+    public int ifExist(int id, String name) {
+        return stockMapper.ifExist(id, name);
+    }
 }

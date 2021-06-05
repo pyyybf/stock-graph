@@ -12,6 +12,11 @@
         select * from Stock where name=#{name} limit 0,1
     </select>
 
+    <!--根据id,名称获取匹配股票数-->
+    <select id="ifExist" resultType="int">
+        select COUNT(*) from Stock where id=#{id} or name=#{name}
+    </select>
+
     <resultMap id="Stock" type="com.example.stockgraph.po.Stock">
         <id column="id" property="id"></id>
         <result column="name" property="name"></result>

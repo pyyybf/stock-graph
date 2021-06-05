@@ -50,8 +50,10 @@
         currentStockId: -1,
         currentStockName: '',
         graphData: {},
-        pre_data: [5, 3, 23],
-        avg_data: [1, 1, 1],
+        pre_data: [],
+        avg_data: [],
+        pre_data_col: [],
+        avg_data_col: [],
         guarantee_a: 0,
       }
     },
@@ -63,13 +65,33 @@
         // 获得图谱数据
         this.graphData = res.data.content;
         this.pre_data = [];
-        this.pre_data[0] = res.data.content.stock.quarter_p;
-        this.pre_data[1] = res.data.content.stock.halfYear_p;
-        this.pre_data[2] = res.data.content.stock.year_p;
+        this.pre_data_col = [];
+        if (res.data.content.stock.quarter_p > -2) {
+          this.pre_data.push(res.data.content.stock.quarter_p)
+          this.pre_data_col.push('季度')
+        }
+        if (res.data.content.stock.halfYear_p > -2) {
+          this.pre_data.push(res.data.content.stock.halfYear_p)
+          this.pre_data_col.push('半年')
+        }
+        if (res.data.content.stock.year_p > -2) {
+          this.pre_data.push(res.data.content.stock.year_p)
+          this.pre_data_col.push('一年')
+        }
         this.avg_data = [];
-        this.avg_data[0] = res.data.content.stock.quarter_a;
-        this.avg_data[1] = res.data.content.stock.halfYear_a;
-        this.avg_data[2] = res.data.content.stock.year_a;
+        this.avg_data_col = [];
+        if (res.data.content.stock.quarter_a > -2) {
+          this.avg_data.push(res.data.content.stock.quarter_a)
+          this.avg_data_col.push('季度')
+        }
+        if (res.data.content.stock.halfYear_a > -2) {
+          this.avg_data.push(res.data.content.stock.halfYear_a)
+          this.avg_data_col.push('半年')
+        }
+        if (res.data.content.stock.year_a > -2) {
+          this.avg_data.push(res.data.content.stock.year_a)
+          this.avg_data_col.push('一年')
+        }
         this.guarantee_a = res.data.content.stock.guarantee_a;
         this.currentStockName = res.data.content.stock.name;
       }
@@ -187,9 +209,11 @@
           let clicked = false;
           const model = node.getModel();
           let size = 100;
-          let labelText = model.oriLabel + '\n Date: ' + model.description.date + '\n';
-          if (model.description.conductor !== '--') labelText += 'Conductor: ' + model.description.conductor + '\n';
-          if (model.description.amount !== '--') labelText += 'Amount: ' + model.description.amount + '\n';
+          let labelText = model.oriLabel
+          if (model.description.date && model.description.date !== '--') labelText += '\n 日期: ' + model.description.date + '\n';
+          if (model.description.conductor && model.description.conductor !== '--') labelText += '执行者: ' + model.description.conductor + '\n';
+          if (model.description.object && model.description.object !== '--') labelText += '处罚对象: ' + model.description.object + '\n';
+          if (model.description.amount && model.description.amount !== '--') labelText += '金额: ' + model.description.amount + '\n';
           states.forEach(function (state) {
             if (state === 'click') {
               clicked = true;
@@ -212,7 +236,7 @@
         let myChart = echarts.init(this.$refs.charts1, "macarons");
         myChart.setOption({
           title: {
-            text: '历史持有盈利概率',
+            text: '历史持有盈利概率' + (this.pre_data.length > 0 ? '' : '(数据不足)'),
             textStyle: {
               fontSize: 20,
             }
@@ -223,7 +247,7 @@
           },
           tooltip: {},
           xAxis: {
-            data: ['季度', '半年', '一年']
+            data: this.pre_data_col
           },
           yAxis: {},
           series: [{
@@ -239,7 +263,7 @@
         let myChart = echarts.init(this.$refs.charts2, "macarons");
         myChart.setOption({
           title: {
-            text: '平均持有盈利情况',
+            text: '平均持有盈利情况' + (this.avg_data.length > 0 ? '' : '(数据不足)'),
             textStyle: {
               fontSize: 20,
             }
@@ -250,7 +274,7 @@
           },
           tooltip: {},
           xAxis: {
-            data: ['季度', '半年', '一年']
+            data: this.avg_data_col
           },
           yAxis: {},
           series: [{

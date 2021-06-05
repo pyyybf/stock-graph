@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import {Input, Radio, Divider, Row, Col} from 'ant-design-vue'
+import {Input, Radio, Divider, Row, Col, message} from 'ant-design-vue'
 
 Vue.config.productionTip = false;
 
@@ -12,6 +12,7 @@ Vue.use(Radio);
 Vue.use(Divider);
 Vue.use(Row);
 Vue.use(Col);
+Vue.prototype.$message = message;
 
 /* eslint-disable no-new */
 new Vue({

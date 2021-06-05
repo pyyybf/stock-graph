@@ -20,3 +20,14 @@ export const getStockByNameAPI = (parameter) => {
     params: {name: parameter}
   })
 }
+
+export const ifExistAPI = (parameter) => {
+  return HttpRequest.request({
+    url: `${api.stockPre}/ifExist`,
+    method: 'get',
+    params: {
+      id: parameter.id,
+      name: parameter.name
+    }
+  })
+}

@@ -26,6 +26,8 @@
 </template>
 
 <script>
+  import {ifExistAPI} from "../api";
+
   export default {
     name: 'Search',
     data() {
@@ -34,23 +36,32 @@
       }
     },
     methods: {
-      onSearch(value) {
+      async onSearch(value) {
         if (value) {
           if (this.ifInputId && !isNaN(value)) {
-            this.$router.push({
-              name: 'StockDetail',
-              params: {
-                stockId: value
-              }
-            })
+            const res = await ifExistAPI({id: value, name: ''})
+            if (res.data.content) {
+              this.$router.push({
+                name: 'StockDetail',
+                params: {
+                  stockId: value
+                }
+              })
+              return
+            }
           } else {
-            this.$router.push({
-              name: 'StockDetail',
-              params: {
-                stockName: value
-              }
-            })
+            const res = await ifExistAPI({id: 0, name: value})
+            if (res.data.content) {
+              this.$router.push({
+                name: 'StockDetail',
+                params: {
+                  stockName: value
+                }
+              })
+              return
+            }
           }
+          this.$message.error(`您输入的股票${this.ifInputId ? 'ID' : '名称'}不存在！`);
         }
       }
     },
