@@ -9,13 +9,13 @@ date_list = ['20210430', '20210331', '20210226', '20210129', '20201231', '202011
              '20200731', '20200630', '20200529', '20200430', '20200331', '20200228', '20200123', '20191231', '20191129',
              '20191031', '20190930', '20190830', '20190731', '20190628', '20190531']
 
-# for i in date_list:
-#     df = pro.monthly(trade_date=i, fields='ts_code,trade_date,change,pct_chg')
-#     df.to_csv("./monthly/" + i + ".csv", index=False, sep=',')
-#     if i != '20210430':
-#         df.to_csv("./monthly/sum.csv", index=False, header=False, sep=',', mode='a+')
-#     else:
-#         df.to_csv("./monthly/sum.csv", index=False, sep=',', mode='a+')
+for i in date_list:
+    df = pro.monthly(trade_date=i, fields='ts_code,trade_date,change,pct_chg')
+    df.to_csv("./monthly/" + i + ".csv", index=False, sep=',')
+    if i != '20210430':
+        df.to_csv("./monthly/sum.csv", index=False, header=False, sep=',', mode='a+')
+    else:
+        df.to_csv("./monthly/sum.csv", index=False, sep=',', mode='a+')
 
 stock_code = []
 with open("./monthly/sum.csv", "r+") as file:
