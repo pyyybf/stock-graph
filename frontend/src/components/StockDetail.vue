@@ -1,9 +1,9 @@
 <template>
   <div id="all">
     <div id="bar">
-      <div class="headerContent">{{currentStockName}}</div>
-      <div class="headerContent">Id {{(Array(6).join(0) + parseInt(currentStockId)).slice(-6)}}</div>
-      <div class="headerContent"> 总担保额: ￥{{guarantee_a.toFixed(2)}}</div>
+      <div class="headerContent">股票名称：{{currentStockName}}</div>
+      <div class="headerContent">股票ID：{{(Array(6).join(0) + parseInt(currentStockId)).slice(-6)}}</div>
+      <div class="headerContent"> 总担保额：￥{{guarantee_a.toFixed(2)}}（亿元）</div>
 
     </div>
     <a-divider></a-divider>
