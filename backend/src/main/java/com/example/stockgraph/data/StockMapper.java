@@ -11,5 +11,7 @@ public interface StockMapper {
 
     Stock getStockByName(String name);
 
-    int ifExist(int id, String name);
+    int ifExistId(int id);
+
+    int ifExistName(String name);
 }

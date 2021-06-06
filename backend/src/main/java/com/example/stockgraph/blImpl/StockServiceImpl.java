@@ -22,7 +22,12 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public int ifExist(int id, String name) {
-        return stockMapper.ifExist(id, name);
+    public int ifExistId(int id) {
+        return stockMapper.ifExistId(id);
+    }
+
+    @Override
+    public int ifExistName(String name) {
+        return stockMapper.ifExistName(name);
     }
 }

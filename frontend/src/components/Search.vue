@@ -26,7 +26,7 @@
 </template>
 
 <script>
-  import {ifExistAPI} from "../api";
+  import {ifExistIdAPI, ifExistNameAPI} from "../api";
 
   export default {
     name: 'Search',
@@ -39,7 +39,7 @@
       async onSearch(value) {
         if (value) {
           if (this.ifInputId && !isNaN(value)) {
-            const res = await ifExistAPI({id: value, name: ''})
+            const res = await ifExistIdAPI(value)
             if (res.data.content) {
               this.$router.push({
                 name: 'StockDetail',
@@ -49,8 +49,11 @@
               })
               return
             }
+          } else if (this.ifInputId && isNaN(value)) {
+            this.$message.error('股票ID为数字！');
+            return
           } else {
-            const res = await ifExistAPI({id: 0, name: value})
+            const res = await ifExistNameAPI(value)
             if (res.data.content) {
               this.$router.push({
                 name: 'StockDetail',

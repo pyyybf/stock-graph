@@ -43,8 +43,13 @@ public class StockController {
         return ResponseVO.buildSuccess(graphInfo);
     }
 
-    @GetMapping("/ifExist")
-    public ResponseVO ifExist(@RequestParam(value = "id") int id, @RequestParam(value = "name") String name) {
-        return ResponseVO.buildSuccess(stockService.ifExist(id, name) > 0);
+    @GetMapping("/ifExistId")
+    public ResponseVO ifExistId(@RequestParam(value = "id") int id) {
+        return ResponseVO.buildSuccess(stockService.ifExistId(id) > 0);
+    }
+
+    @GetMapping("/ifExistName")
+    public ResponseVO ifExistName(@RequestParam(value = "name") String name) {
+        return ResponseVO.buildSuccess(stockService.ifExistName(name) > 0);
     }
 }

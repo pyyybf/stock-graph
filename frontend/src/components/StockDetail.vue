@@ -110,6 +110,7 @@
         this.avg_data[1] = res.data.content.stock.halfYear_a;
         this.avg_data[2] = res.data.content.stock.year_a;
         this.guarantee_a = res.data.content.stock.guarantee_a;
+        this.currentStockId = res.data.content.stock.id;
       }
       this.initG6();
       this.initbargraph1();
